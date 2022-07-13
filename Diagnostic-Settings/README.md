@@ -1,0 +1,4 @@
+# This is where breakdown references for Diagnostic Settings policies will live. 
+
+## TODO: Detailed Explination of Azure-Policy-Definition_Detect-Specific-Diagnostic-Settings
+## TODO: Detailed Explination of
