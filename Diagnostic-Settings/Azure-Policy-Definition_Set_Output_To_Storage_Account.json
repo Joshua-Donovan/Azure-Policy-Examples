@@ -1,6 +1,6 @@
 {
+  "$schema": "https://schema.management.azure.com/schemas/2020-10-01/policyDefinition.json#",
   "properties": {
-    "$schema": "https://schema.management.azure.com/schemas/2020-10-01/policyDefinition.json#",
     "policyType": "Custom",
     "mode": "All",
     "displayName": "Deploy Diagnostic Settings for Azure Synapse to Storage Account",
