@@ -1,5 +1,6 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2020-10-01/policyDefinition.json#",
+  "contentVersion": "1.0.0.0",
   "properties": {
     "policyType": "Custom",
     "mode": "All",
