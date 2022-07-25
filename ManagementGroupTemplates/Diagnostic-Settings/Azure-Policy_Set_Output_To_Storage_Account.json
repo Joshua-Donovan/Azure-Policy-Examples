@@ -154,7 +154,7 @@
                                                 "equals": "[[if(contains(parameters('logCategoriesToEnable'), current('Microsoft.Insights/diagnosticSettings/logs[*].category')), 'True', 'False')]"
                                             }
                                         },
-                                        "equals": 6
+                                        "equals": 7
                                     },
                                     {
                                         "field": "Microsoft.Insights/diagnosticSettings/storageAccountId",
