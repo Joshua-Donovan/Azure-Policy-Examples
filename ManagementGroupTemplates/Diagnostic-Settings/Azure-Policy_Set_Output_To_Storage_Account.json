@@ -49,17 +49,23 @@
             },
             "defaultValue": "setbypolicy_SynapseStorageAnalytics"
         },
-        "logsEnabled": {
-            "type": "String",
+        "logCategoriesToEnable": {
+            "type": "Array",
             "metadata": {
-                "displayName": "Enable logs",
-                "description": "Whether to enable logs stream to the Log Analytics workspace - True or False"
+                "displayName": "Enable Logs Categories",
+                "description": "Which Categories of Logs to Capture"
             },
             "allowedValues": [
-                "True",
-                "False"
+                "SynapseRbacOperations",
+                "GatewayApiRequests",
+                "BuiltinSqlReqsEnded",
+                "IntegrationPipelineRuns",
+                "IntegrationActivityRuns",
+                "IntegrationTriggerRuns"
             ],
-            "defaultValue": "True"
+            "defaultValue": [
+                "GatewayApiRequests"
+            ]
         },
         "Location": {
             "type": "String",
@@ -68,7 +74,6 @@
                 "EastUS"
             ],
             "defaultValue": "SouthCentralUS"
-
         }
     },
     "variables": {
@@ -84,13 +89,53 @@
                 "mode": "All",
                 "displayName": "Deploy Diagnostic Settings for Azure Synapse to Storage Account",
                 "description": "Deploys the diagnostic settings for Azure Synapse to stream to a Storage Account when any Event Hub which is missing this diagnostic settings is created or updated.",
+                "parameters": {
+                    "effect": {
+                        "type": "String",
+                        "metadata": {
+                            "displayName": "Effect",
+                            "description": "Enable or disable the execution of the policy"
+                        },
+                        "allowedValues": [
+                            "DeployIfNotExists",
+                            "Disabled"
+                        ],
+                        "defaultValue": "DeployIfNotExists"
+                    },
+                    "profileName": {
+                        "type": "String",
+                        "metadata": {
+                            "displayName": "Profile name",
+                            "description": "The diagnostic settings profile name"
+                        },
+                        "defaultValue": "setbypolicy_SynapseStorageAnalytics"
+                    },
+                    "logCategoriesToEnable": {
+                        "type": "Array",
+                        "metadata": {
+                            "displayName": "Enable Logs Categories",
+                            "description": "Which Categories of Logs to Capture"
+                        },
+                        "allowedValues": [
+                            "SynapseRbacOperations",
+                            "GatewayApiRequests",
+                            "BuiltinSqlReqsEnded",
+                            "IntegrationPipelineRuns",
+                            "IntegrationActivityRuns",
+                            "IntegrationTriggerRuns"
+                        ],
+                        "defaultValue": [
+                            "GatewayApiRequests"
+                        ]
+                    }
+                },
                 "policyRule": {
                     "if": {
                         "field": "type",
                         "equals": "Microsoft.Synapse/workspaces"
                     },
                     "then": {
-                        "effect": "[parameters('effect')]",
+                        "effect": "[[parameters('effect')]",
                         "details": {
                             "type": "Microsoft.Insights/diagnosticSettings",
                             "evaluationDelay": "AfterProvisioning",
@@ -102,12 +147,22 @@
                             "existenceCondition": {
                                 "allOf": [
                                     {
-                                        "field": "Microsoft.Insights/diagnosticSettings/logs.enabled",
-                                        "equals": "[parameters('logsEnabled')]"
+                                        "count": {
+                                            "field": "Microsoft.Insights/diagnosticSettings/logs[*]",
+                                            "where": {
+                                                "value": "[[current('Microsoft.Insights/diagnosticSettings/logs[*].enabled')]",
+                                                "equals": "[[if(contains(parameters('logCategoriesToEnable'), current('Microsoft.Insights/diagnosticSettings/logs[*].category')), 'True', 'False')]"
+                                            }
+                                        },
+                                        "equals": 7
                                     },
                                     {
-                                        "value": "Microsoft.Insights/diagnosticSettings/name",
-                                        "equals": "[parameters('profileName')]"
+                                        "field": "Microsoft.Insights/diagnosticSettings/storageAccountId",
+                                        "equals": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingDiagnosticsStorageAccountSubscriptionId'), parameters('existingDiagnosticsStorageAccountResourceGroup')), 'Microsoft.Storage/storageAccounts', parameters('existingDiagnosticsStorageAccountName'))]"
+                                    },
+                                    {
+                                        "value": "[[parameters('profileName')]",
+                                        "notEquals": ""
                                     }
                                 ]
                             },
@@ -118,6 +173,9 @@
                                         "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
                                         "contentVersion": "1.0.0.0",
                                         "parameters": {
+                                            "resourceName": {
+                                                "type": "string"
+                                            },
                                             "existingDiagnosticsStorageAccountName": {
                                                 "type": "string"
                                             },
@@ -130,41 +188,41 @@
                                             "profileName": {
                                                 "type": "string"
                                             },
-                                            "logsEnabled": {
-                                                "type": "string"
+                                            "logCategoriesToEnable": {
+                                                "type": "array"
                                             }
                                         },
                                         "resources": [
                                             {
                                                 "type": "Microsoft.Synapse/workspaces/providers/diagnosticSettings",
                                                 "apiVersion": "2021-05-01-preview",
-                                                "name": "[concat('Synapse', '/', 'Microsoft.Insights/', parameters('profileName'))]",
+                                                "name": "[[concat(parameters('resourceName'), '/', 'Microsoft.Insights/', parameters('profileName'))]",
                                                 "properties": {
                                                     "storageAccountId": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingDiagnosticsStorageAccountSubscriptionId'), parameters('existingDiagnosticsStorageAccountResourceGroup')), 'Microsoft.Storage/storageAccounts', parameters('existingDiagnosticsStorageAccountName'))]",
                                                     "logs": [
                                                         {
                                                             "category": "SynapseRbacOperations",
-                                                            "enabled": "[parameters('logsEnabled')]"
+                                                            "enabled": "[if(contains(parameters('logCategoriesToEnable'), 'SynapseRbacOperations'), 'True', 'False')]"
                                                         },
                                                         {
                                                             "category": "GatewayApiRequests",
-                                                            "enabled": "[parameters('logsEnabled')]"
+                                                            "enabled": "[if(contains(parameters('logCategoriesToEnable'), 'GatewayApiRequests'), 'True', 'False')]"
                                                         },
                                                         {
                                                             "category": "BuiltinSqlReqsEnded",
-                                                            "enabled": "[parameters('logsEnabled')]"
+                                                            "enabled": "[if(contains(parameters('logCategoriesToEnable'), 'BuiltinSqlReqsEnded'), 'True', 'False')]"
                                                         },
                                                         {
                                                             "category": "IntegrationPipelineRuns",
-                                                            "enabled": "[parameters('logsEnabled')]"
+                                                            "enabled": "[if(contains(parameters('logCategoriesToEnable'), 'IntegrationPipelineRuns'), 'True', 'False')]"
                                                         },
                                                         {
                                                             "category": "IntegrationActivityRuns",
-                                                            "enabled": "[parameters('logsEnabled')]"
+                                                            "enabled": "[if(contains(parameters('logCategoriesToEnable'), 'IntegrationActivityRuns'), 'True', 'False')]"
                                                         },
                                                         {
                                                             "category": "IntegrationTriggerRuns",
-                                                            "enabled": "[parameters('logsEnabled')]"
+                                                            "enabled": "[if(contains(parameters('logCategoriesToEnable'), 'IntegrationTriggerRuns'), 'True', 'False')]"
                                                         }
                                                     ]
                                                 }
@@ -172,6 +230,9 @@
                                         ]
                                     },
                                     "parameters": {
+                                        "resourceName": {
+                                            "value": "[[field('name')]"
+                                        },
                                         "existingDiagnosticsStorageAccountName": {
                                             "value": "[parameters('existingDiagnosticsStorageAccountName')]"
                                         },
@@ -181,8 +242,8 @@
                                         "profileName": {
                                             "value": "[parameters('profileName')]"
                                         },
-                                        "logsEnabled": {
-                                            "value": "[parameters('logsEnabled')]"
+                                        "logCategoriesToEnable": {
+                                            "value": "[parameters('logCategoriesToEnable')]"
                                         },
                                         "existingDiagnosticsStorageAccountSubscriptionId": {
                                             "value": "[parameters('existingDiagnosticsStorageAccountSubscriptionId')]"
@@ -210,7 +271,18 @@
                 "scope": "[variables('mgScope')]",
                 "policyDefinitionId": "[concat(variables('mgScope'), '/providers/', 'Microsoft.Authorization/policyDefinitions/', 'Deploy Diagnostic Settings for Azure Synapse to Storage Account')]",
                 "DisplayName": "Diagnostics for Synapse",
-                "enforcementMode": "Default"
+                "enforcementMode": "Default",
+                "parameters": {
+                    "logCategoriesToEnable": {
+                        "value": "[parameters('logCategoriesToEnable')]"
+                    },
+                    "profileName": {
+                        "value": "[parameters('profileName')]"
+                    },
+                    "effect": {
+                        "value": "[parameters('effect')]"
+                    }
+                }
             }
         }
     ]
