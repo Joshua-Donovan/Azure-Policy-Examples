@@ -1,0 +1,20 @@
+[
+    {
+        "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/${Your Management Group}/providers/Microsoft.Authorization/policyDefinitions/${Your Definition Name}",
+        "parameters": {
+            "logCategoriesToEnable": {
+                "value": [
+                    "SynapseRbacOperations",
+                    "GatewayApiRequests",
+                    "BuiltinSqlReqsEnded",
+                    "IntegrationPipelineRuns",
+                    "IntegrationActivityRuns",
+                    "IntegrationTriggerRuns"
+                ]
+            },
+            "profileName": {
+                "value": "MyAwesomeDiagnostics"
+            }
+        }
+    }
+]
