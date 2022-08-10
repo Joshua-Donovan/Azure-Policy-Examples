@@ -12,13 +12,13 @@ $PolicyInitiativeName = "" # What you want to name your Initiative Assignment
 
 $Location = "" # What Azure locaiton would you like to use? eastus, centralus, southcentralus ...etc
 
-$ValidationMaxLoop = = # Integer, how many times do you want the propigation checks to loop
+$ValidationMaxLoop = 2 # How many times do you want the propigation checks to loop
 
 $templateParams = @{
     "existingDiagnosticsStorageAccountName"           = ""; # Your Logging storage account Name
     "existingDiagnosticsStorageAccountResourceGroup"  = ""; # Your Logging storage account Resource Group
     "existingDiagnosticsStorageAccountSubscriptionId" = ""; # Your Logging storage account Subscription
-    "policyDefinitionName" = "$($PolicyDefinitionName)"; 
+    "policyDefinitionName"                            = "$($PolicyDefinitionName)"; 
 } 
 
 # Deploy Policy Definition (You can choose to loop this for more definition deployments for your policy set)
