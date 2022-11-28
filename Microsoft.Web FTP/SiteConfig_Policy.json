@@ -1,0 +1,43 @@
+{
+    "properties": {
+      "displayName": "App Service apps should require FTPS only",
+      "policyType": "Custom",
+      "mode": "All",
+      "description": "Take configured action if FTPS is not enabled.",
+      "parameters": {
+        "effect": {
+          "type": "String",
+          "metadata": {
+            "displayName": "Effect",
+            "description": "Enable or disable the execution of the policy"
+          },
+          "allowedValues": [
+            "Deny",
+            "AuditIfNotExists",
+            "Disabled"
+          ],
+          "defaultValue": "Deny"
+        }
+      },
+      "policyRule": {
+        "if": {
+          "allOf": [
+            {
+              "field": "type",
+              "equals": "Microsoft.Web/sites/config"
+            },
+            {
+              "field": "Microsoft.Web/sites/config/ftpsState",
+              "Notin": [
+                "FtpsOnly",
+                "Disabled"
+              ]
+            }
+          ]
+        },
+        "then": {
+          "effect": "[parameters('effect')]"
+        }
+      }
+    }
+  }
