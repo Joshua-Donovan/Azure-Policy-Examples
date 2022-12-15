@@ -103,7 +103,7 @@
                                 "variables": {},
                                 "resources": [
                                     {
-                                        "type": "Microsoft.EventHub/namespaces/providers/diagnosticSettings",
+                                        "type": "Microsoft.Storage/storageAccounts/providers/diagnosticSettings",
                                         "apiVersion": "2017-05-01-preview",
                                         "name": "[concat(parameters('resourceName'), '/', 'Microsoft.Insights/', parameters('profileName'))]",
                                         "location": "[parameters('location')]",
