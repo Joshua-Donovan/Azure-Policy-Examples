@@ -1,8 +1,9 @@
 # Azure Policy to add required network CIDR ranges [without the `Count` function]
 For this discussion we are going to be focusing only on the second **condition** in our `if: {}` statement. Otherwise this policy is identical to the *Modify-Network-ACL.json* one.
 
-For an in depth break down of this policy please see: [README-Modify-Network-ACL.md](https://github.com/Joshua-Donovan/Azure-Policy-Examples/blob/b4ba2d356636c5f55c6a14cb895ba936d3772e34/Microsoft.KeyVault/vaults/networkAcls/.ipRules/README.md)
+For an in depth break down of this custom policy definition please see: [README-Modify-Network-ACL.md](https://github.com/Joshua-Donovan/Azure-Policy-Examples/blob/b4ba2d356636c5f55c6a14cb895ba936d3772e34/Microsoft.KeyVault/vaults/networkAcls/.ipRules/README.md)
 
+> **DISCLAIMER:** This is a custom policy definition. This is **not** a policy definition published by Microsoft and therefore carries no warranty or support contract. This is to be used as a teaching tool only. Please always write your own custom policies, fully understand them, and only publish to production after extensive testing in your own **unique** environment!
 ## Functions:
 The following functions are used in the **condition statement** we are focused on.
 > `equals()`: https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/template-functions-comparison#equals  
