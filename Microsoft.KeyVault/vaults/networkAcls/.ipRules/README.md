@@ -3,7 +3,7 @@
 ## Azure Policy Definition Requirements `[Intent]`:
 *Contoso requires specified IP Addresses and/or IP Address CIDR[^1] ranges have access to their Azure Keyvault resources through the Azure KeyVault Built-In Firewall.*
 
-> **DISCLAIMER:** This is a custom policy definition. This is **not** a policy definition published by Microsoft and therefore carries no warranty or support contract. This is to be used as a teaching tool only. Please always write your own custom policies, fully understand them, and only publish to production after extensive testing in your own **unique** environment!
+> **DISCLAIMER:** This is a custom policy definition. This is **not** a policy definition published by Microsoft and therefore carries no warranty or official support expectation. This is to be used as a teaching tool only. Please always write your own custom policies, fully understand them, and only publish to production after extensive testing in your own **unique** environment!
 
 ## Scope:
 This policy will involve the parent resource type `Microsoft.KeyVault/vaults` and a focus on the child resource `Microsoft.KeyVault/vaults/networkAcls.ipRules`.
