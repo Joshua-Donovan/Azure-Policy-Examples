@@ -54,7 +54,7 @@ and if our `parameters('aclCidrRanges')` policy assignment parameter looks like:
 
 Then our result from the `intersection()` function would look like:
 ```json
-[{"value":"10.1.1.0/24"}]]
+[{"value":"10.1.1.0/24"}]
 ```
 This result shows that only one of the designated CIDR[^2] Address ranges was already on the `"Microsoft.KeyVault/vaults/networkAcls.ipRules"` meaning the `"then": {}` statement will need to execute to add in `{"value":"192.168.1.0/24"}`. (**Non-Compliant**)
 
