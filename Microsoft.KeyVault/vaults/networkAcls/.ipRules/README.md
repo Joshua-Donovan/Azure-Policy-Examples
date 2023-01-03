@@ -35,7 +35,7 @@ This policy utilizes the following Azure Policy and Azure Resource Manager Templ
 ---  
 ---  
 Starting from the top!
-```jsonc
+```json
 // Azure Policy
 {
     "mode": "All", 
@@ -49,7 +49,7 @@ We are using `"All"` because it is recommended to default to `"All"` unless you 
 Next lets dive into our `"policyRule"` we will start with the `"if": {}` statement before moving on to the `"then": {}` section. 
 
 ### **"if": {}**
-```jsonc
+```json
 // Azure Policy
 "if": {
             "allOf": [
@@ -82,7 +82,7 @@ The second condition statement is a bit more complicated.
 
 We can see that this condition starts with an Azure Policy `Count` function. This function allows us to iterate through arrays within our `"if": {}` statement. Essentially this functions as a simple for loop within Azure Policy. 
 
-```jsonc
+```json
 // Azure Policy
 {
     "count": {
@@ -168,7 +168,7 @@ In Summary of our `"if": {}` statement, if both the Azure Resource type is `"Mic
 ---  
 
 ### **"then": {}**
-```jsonc
+```json
 // Azure Policy
 "then": {
     "effect": "[parameters('effect')]",
@@ -259,13 +259,13 @@ Lets say our `"Microsoft.KeyVault/vaults/networkAcls.ipRules"` contains some exs
 ]
 ```
 This is great, but we want to enforce that some IP Address CIDR ranges are always added in our Policy Scope. For that we will Assign our Policy Definition and add some 192.168.x.x Ip Address CIDR ranges through our policy. 
-```jsonc
+```json
 // Assignment Parameter
 [{"value":"192.168.1.0/24"},{"value":"192.168.2.0/24"}]
 ```
 
 Ok so if we focus into our `union(())` function it would look like:
-```jsonc     
+```json     
 //                |       Values from our existing ipRules       | |              Values from our parameter              |
 "value": "[union( {'value':'10.1.1.0/24'},{'value':'10.2.2.0/24'} , {'value':'192.168.1.0/24'},{'value':'192.168.2.0/24'}]"
 ```
