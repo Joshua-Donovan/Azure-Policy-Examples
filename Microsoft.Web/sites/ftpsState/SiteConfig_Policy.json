@@ -1,0 +1,46 @@
+{
+  "mode": "All",
+  "policyRule": {
+    "if": {
+      "allOf": [
+        {
+          "field": "type",
+          "Equals": "Microsoft.Web/sites"
+        },
+        {
+          "field": "Microsoft.Web/sites/siteConfig",
+          "exists": true
+        },
+        {
+          "field": "kind",
+          "notContains": "functionapp"
+        },
+        {
+          "field": "Microsoft.Web/sites/siteConfig.ftpsState",
+          "Notin": [
+            "FtpsOnly",
+            "Disabled"
+          ]
+        }
+      ]
+    },
+    "then": {
+      "effect": "[parameters('effect')]"
+    }
+  },
+  "parameters": {
+    "effect": {
+      "type": "String",
+      "metadata": {
+        "displayName": "Effect",
+        "description": "Enable or disable the execution of the policy"
+      },
+      "allowedValues": [
+        "Deny",
+        "AuditIfNotExists",
+        "Disabled"
+      ],
+      "defaultValue": "Deny"
+    }
+  }
+}

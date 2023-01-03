@@ -1,0 +1,83 @@
+{
+    "mode": "All",
+    "policyRule": {
+        "if": {
+            "allOf": [
+                {
+                    "field": "type",
+                    "in": "[parameters('listOfResourceTypes')]"
+                },
+                {
+                    "anyOf": [
+                        {
+                            "value": "[take(field('name'), 5)]",
+                            "notIn": "[parameters('prefixList')]"
+                        },
+                        {
+                            "not": {
+                                "value": "[substring(field('name'), sub(length(field('name')), length(parameters('postfixPattern'))))]",
+                                "match": "[parameters('postfixPattern')]"
+                            }
+                        },
+                        {
+                            "not": {
+                                "value": "[if(empty(first(split(field('name'), '-'))), 'emptyStart', if(empty(last(split(field('name'), '-'))), 'emptyEnding', if(equals(length(split(field('name'), '-')),add(parameters('dashCount'), 1)), 'matchesPattern', 'notEnoughorTooManyDashes')))]",
+                                "equals": "matchesPattern"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        "then": {
+            "effect": "[parameters('policyEffect')]"
+        }
+    },
+    "parameters": {
+        "policyEffect": {
+            "type": "String",
+            "metadata": {
+                "displayName": "policyEffect",
+                "description": "Disable cration of ResourceGroup without enough dashes"
+            },
+            "allowedValues": [
+                "Audit",
+                "Deny",
+                "Disabled"
+            ],
+            "defaultValue": "Deny"
+        },
+        "listOfResourceTypes": {
+            "type": "Array",
+            "metadata": {
+                "displayName": "listOfResourceTypes",
+                "description": "List of resource types that will be evaluated",
+                "strongType": "resourceTypes"
+            }
+        },
+        "prefixList": {
+            "type": "Array",
+            "metadata": {
+                "displayName": "prefixList",
+                "description": "list of allowed prefixes"
+            },
+            "defaultValue": []
+        },
+        "dashCount": {
+            "type": "Integer",
+            "metadata": {
+                "displayName": "dashCount",
+                "description": "Number of Dashes in the naming standard"
+            },
+            "defaultValue": 3
+        },
+        "postfixPattern": {
+            "type": "String",
+            "metadata": {
+                "displayName": "postfixPattern",
+                "description": "Match Pattern of numbers the resourcegroup name should end with"
+            },
+            "defaultValue": "##"
+        }
+    }
+}

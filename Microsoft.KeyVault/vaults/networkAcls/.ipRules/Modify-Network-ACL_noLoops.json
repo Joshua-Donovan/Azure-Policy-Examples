@@ -1,0 +1,55 @@
+{
+    "mode": "All",
+    "policyRule": {
+        "if": {
+            "allOf": [
+                {
+                    "field": "type",
+                    "equals": "Microsoft.KeyVault/vaults"
+                },
+                {
+                    "value": "[equals(intersection(field('Microsoft.KeyVault/vaults/networkAcls.ipRules'), parameters('aclCidrRanges')), parameters('aclCidrRanges'))]",
+                    "equals": false
+                }
+            ]
+        },
+        "then": {
+            "effect": "[parameters('effect')]",
+            "details": {
+                "conflictEffect": "audit",
+                "roleDefinitionIds": [
+                    "/providers/Microsoft.Authorization/roleDefinitions/f25e0fa2-a7c8-4377-a976-54943a77a395"
+                ],
+                "operations": [
+                    {
+                        "operation": "addOrReplace",
+                        "field": "Microsoft.KeyVault/vaults/networkAcls.ipRules",
+                        "value": "[union(field('Microsoft.KeyVault/vaults/networkAcls.ipRules[*]'), parameters('aclCidrRanges'))]"
+                    }
+                ]
+            }
+        }
+    },
+    "parameters": {
+        "effect": {
+            "type": "String",
+            "metadata": {
+                "displayName": "Effect",
+                "description": "Enable or disable the execution of the policy"
+            },
+            "allowedValues": [
+                "Modify",
+                "Disabled"
+            ],
+            "defaultValue": "Modify"
+        },
+        "aclCidrRanges": {
+            "type": "Array",
+            "metadata": {
+                "displayName": "Object Array of IP Address CIDR ranges",
+                "description": "Object Array of IP Address CIDR ranges: [{\"value\":\"192.168.1.0/24\"},{\"value\":\"10.0.1.0/23\"}] | NOTE: This example contains Private IP Addresses, private IP addresses will fail to apply to the acl list because they are not supported. Please only add public IP addresses to this array of objects."
+            },
+            "defaultValue": []
+        }
+    }
+}

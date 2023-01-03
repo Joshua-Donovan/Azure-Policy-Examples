@@ -1,8 +1,8 @@
-# Example PowerShell Az Module Command for ManagementGroupTemplates\Diagnostic-Settings\Azure-Policy_Set_Output_To_Storage_Account.json
+# Example PowerShell Az Module Command for this file
 Anything in ${} Needs to be replaced with your environment's information!
 
 Things to Note:
-My template has an allow list for locations, see line 64 of the policy template.
+My definition has an allow list for locations, see line 64 of the policy definition.
 Parameter -TemplateUri can be a local address (C:\...etc) or a web address (Https://www...etc)
 
 ```

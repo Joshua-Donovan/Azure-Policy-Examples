@@ -1,6 +1,6 @@
 {
     "properties": {
-        "displayName": "Deploy Diagnostic Settings for a Storage Account to Log Analytics workspace",
+        "displayName": "Deploy Specific Diagnostic Settings for a Storage Account to Log Analytics workspace",
         "policyType": "Custom",
         "mode": "All",
         "description": "Deploys the diagnostic settings a Storage Account to stream to a regional Log Analytics workspace when any Event Hub which is missing this diagnostic settings is created or updated. (This does not include the sub-diagnostic settings for Blob, Table, Queue or File Services)",

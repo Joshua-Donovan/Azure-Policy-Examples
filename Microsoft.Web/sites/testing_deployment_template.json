@@ -39,9 +39,9 @@
         },
         "ftpsState": {
             "type": "string",
-            "defaultValue": "FTPSonly",
+            "defaultValue": "FtpsOnly",
             "allowedValues": [
-                "FTPSonly",
+                "FtpsOnly",
                 "AllAllowed",
                 "Disabled"
             ],
@@ -72,26 +72,7 @@
             "php": "https://github.com/Azure-Samples/php-docs-hello-world",
             "html": "https://github.com/Azure-Samples/html-docs-hello-world"
         },
-        "gitRepoUrl": "[if(bool(parameters('helloWorld')), variables('gitRepoReference')[toLower(parameters('language'))], parameters('repoUrl'))]",
-        "configReference": {
-            ".net": {
-                "comments": ".Net app. No additional configuration needed."
-            },
-            "html": {
-                "comments": "HTML app. No additional configuration needed."
-            },
-            "php": {
-                "phpVersion": "7.4"
-            },
-            "node": {
-                "appSettings": [
-                    {
-                        "name": "WEBSITE_NODE_DEFAULT_VERSION",
-                        "value": "12.15.0"
-                    }
-                ]
-            }
-        }
+        "gitRepoUrl": "[if(bool(parameters('helloWorld')), variables('gitRepoReference')[toLower(parameters('language'))], parameters('repoUrl'))]"
     },
     "resources": [
         {
@@ -112,8 +93,10 @@
                 "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanPortalName'))]"
             ],
             "properties": {
-                "siteConfig": "[variables('configReference')[parameters('language')]]",
-                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanPortalName'))]",
+                "siteConfig": {
+                    "ftpsState": "[parameters('ftpsState')]"
+                },
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanPortalName'))]"
             },
             "resources": [
                 {
@@ -130,21 +113,8 @@
                         "branch": "master",
                         "isManualIntegration": true
                     }
-                },
-                {
-                    "type": "Microsoft.Web/sites/config",
-                    "apiVersion": "2022-03-01",
-                    "name": "[concat(parameters('site_name'), '/web')]",
-                    "location": "Central US",
-                    "dependsOn": [
-                        "[resourceId('Microsoft.Web/sites', parameters('site_name'))]"
-                    ],
-                    "properties": {
-                        "ftpsState": "[parameters('ftpsState')]"
-                    }
                 }
             ]
         }
-
     ]
 }
