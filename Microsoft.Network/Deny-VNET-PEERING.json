@@ -1,0 +1,74 @@
+{
+    "mode": "All",
+    "policyRule": {
+        "if": {
+            "anyOf": [
+                {
+                    "allOf": [
+                        {
+                            "field": "type",
+                            "equals": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings"
+                        },
+                        {
+                            "not": {
+                                "field": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings/remoteVirtualNetwork.id",
+                                "in": "[parameters('allowedVnets')]"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "allOf": [
+                        {
+                            "field": "type",
+                            "equals": "Microsoft.Network/virtualNetworks"
+                        },
+                        {
+                            "not": {
+                                "count": {
+                                    "field": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings[*]",
+                                    "where": {
+                                        "field": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings[*].remoteVirtualNetwork.id",
+                                        "in": "[parameters('allowedVnets')]"
+                                    }
+                                },
+                                "equals": "[length('Microsoft.Network/virtualNetworks/virtualNetworkPeerings[*]')]"
+                            }
+                        },
+                        {
+                            "field": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings[*].remoteVirtualNetwork.id",
+                            "exists": true
+                        }
+                    ]
+                }
+            ]
+        },
+        "then": {
+            "effect": "[parameters('effect')]"
+        }
+    },
+    "parameters": {
+        "allowedVnets": {
+            "type": "Array",
+            "metadata": {
+                "displayName": "Allowed VNets",
+                "description": "Enter list of allowed VNets using",
+                "strongType": "Microsoft.Network/virtualNetworks"
+            },
+            "defaultValue": []
+        },
+        "effect": {
+            "type": "String",
+            "metadata": {
+                "displayName": "Effect",
+                "description": "Enable or disable the execution of the policy"
+            },
+            "allowedValues": [
+                "deny",
+                "audit",
+                "disabled"
+            ],
+            "defaultValue": "deny"
+        }
+    }
+}
