@@ -263,7 +263,6 @@ This is great, but we want to enforce that some IP Address CIDR ranges are alway
 ```
 
 Ok so if we focus into our `union(())` function it would look like:
-> This might look weird if your window is not wide enough! Zoom out and enhance! :D
 ```json           
 //                |       Values from our existing ipRules       | |              Values from our parameter              |
 "value": "[union( {'value':'10.1.1.0/24'},{'value':'10.2.2.0/24'} , {'value':'192.168.1.0/24'},{'value':'192.168.2.0/24'}]"
