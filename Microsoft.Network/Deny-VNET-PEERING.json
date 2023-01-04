@@ -10,10 +10,30 @@
                             "equals": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings"
                         },
                         {
-                            "not": {
-                                "field": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings/remoteVirtualNetwork.id",
-                                "in": "[parameters('allowedVnets')]"
-                            }
+                            "anyOf": [
+                                {
+                                    "count": {
+                                        "value": "[parameters('stringPatterns')]",
+                                        "name": "stringPattern",
+                                        "where": {
+                                            "value": "[contains(toLower(field('id')), toLower(current('stringPattern')))]",
+                                            "equals": true
+                                        }
+                                    },
+                                    "greater": 0
+                                },
+                                {
+                                    "count": {
+                                        "value": "[parameters('stringPatterns')]",
+                                        "name": "stringPattern",
+                                        "where": {
+                                            "value": "[contains(toLower(field('Microsoft.Network/virtualNetworks/virtualNetworkPeerings/remoteVirtualNetwork.id')), toLower(current('stringPattern')))]",
+                                            "equals": true
+                                        }
+                                    },
+                                    "greater": 0
+                                }
+                            ]
                         }
                     ]
                 },
@@ -24,20 +44,36 @@
                             "equals": "Microsoft.Network/virtualNetworks"
                         },
                         {
-                            "not": {
-                                "count": {
-                                    "field": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings[*]",
-                                    "where": {
-                                        "field": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings[*].remoteVirtualNetwork.id",
-                                        "in": "[parameters('allowedVnets')]"
-                                    }
-                                },
-                                "equals": "[length('Microsoft.Network/virtualNetworks/virtualNetworkPeerings[*]')]"
-                            }
-                        },
-                        {
-                            "field": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings[*].remoteVirtualNetwork.id",
-                            "exists": true
+                            "count": {
+                                "field": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings[*]",
+                                "where": {
+                                    "anyOf": [
+                                        {
+                                            "count": {
+                                                "value": "[parameters('stringPatterns')]",
+                                                "name": "stringPattern",
+                                                "where": {
+                                                    "value": "[contains(toLower(current('Microsoft.Network/virtualNetworks/virtualNetworkPeerings[*].id')), toLower(current('stringPattern')))]",
+                                                    "equals": true
+                                                }
+                                            },
+                                            "greater": 0
+                                        },
+                                        {
+                                            "count": {
+                                                "value": "[parameters('stringPatterns')]",
+                                                "name": "stringPattern",
+                                                "where": {
+                                                    "value": "[contains(toLower(current('Microsoft.Network/virtualNetworks/virtualNetworkPeerings[*].remoteVirtualNetwork.id')), toLower(current('stringPattern')))]",
+                                                    "equals": true
+                                                }
+                                            },
+                                            "greater": 0
+                                        }
+                                    ]
+                                }
+                            },
+                            "greater": 0
                         }
                     ]
                 }
@@ -48,15 +84,6 @@
         }
     },
     "parameters": {
-        "allowedVnets": {
-            "type": "Array",
-            "metadata": {
-                "displayName": "Allowed VNets",
-                "description": "Enter list of allowed VNets using",
-                "strongType": "Microsoft.Network/virtualNetworks"
-            },
-            "defaultValue": []
-        },
         "effect": {
             "type": "String",
             "metadata": {
@@ -69,6 +96,13 @@
                 "disabled"
             ],
             "defaultValue": "deny"
+        },
+        "stringPatterns": {
+            "type": "Array",
+            "metadata": {
+                "displayName": "String Pattern Array",
+                "description": "Array of string patterns to match the virtual Network names against"
+            }
         }
     }
 }
