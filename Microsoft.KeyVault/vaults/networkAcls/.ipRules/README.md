@@ -1,6 +1,6 @@
-# Azure Policy to add required network CIDR ranges
+# Azure Policy to add required network CIDR ranges [discussion]
 
-## Azure Policy Definition Requirements `[Intent]`:
+## Azure Policy Definition Requirements `[intent]`:
 *Contoso requires specified IP Addresses and/or IP Address CIDR[^1] ranges have access to their Azure Keyvault resources through the Azure KeyVault Built-In Firewall.*
 
 > **DISCLAIMER:** This is a custom policy definition. This is **not** a policy definition published by Microsoft and therefore carries no warranty or official support expectation. This is to be used as a teaching tool only. Please always write your own custom policies, fully understand them, and only publish to production after extensive testing in your own **unique** environment!
