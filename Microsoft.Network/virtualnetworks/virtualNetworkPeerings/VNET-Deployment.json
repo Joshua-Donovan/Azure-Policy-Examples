@@ -9,10 +9,6 @@
             },
             "defaultValue": "southcentralus"
         },
-        "extendedLocation": {
-            "type": "object",
-            "defaultValue": {}
-        },
         "virtualNetworkName": {
             "type": "string",
             "defaultValue": "myVnet",
@@ -211,7 +207,6 @@
             "apiVersion": "2020-11-01",
             "name": "[parameters('virtualNetworkName')]",
             "location": "[parameters('location')]",
-            "extendedLocation": "[if(empty(parameters('extendedLocation')), json('null'), parameters('extendedLocation'))]",
             "tags": "[if(contains(parameters('tagsByResource'), 'Microsoft.Network/virtualNetworks'), parameters('tagsByResource')['Microsoft.Network/virtualNetworks'], json('{}'))]",
             "dependsOn": [
                 "natGatewaysWithNewPublicIpAddressCopy",
@@ -229,10 +224,10 @@
                 "virtualNetworkPeerings": [
                     {
                         "name": "Test81",
-                        "id": "[concat('/subscriptions/9b7e76e6-1c02-4e83-bf8f-7509a3dd1aab/resourceGroups/Policy_Play/providers/Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'), '/virtualNetworkPeerings/Test81')]",
+                        "id": "[concat('/subscriptions/.../resourceGroups/.../providers/Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'), '/virtualNetworkPeerings/Test81')]",
                         "properties": {
                             "remoteVirtualNetwork": {
-                                "id": "[concat('/subscriptions/9b7e76e6-1c02-4e83-bf8f-7509a3dd1aab/resourceGroups/Policy_Play/providers/Microsoft.Network/virtualNetworks/', parameters('peeringNetworkName'))]"
+                                "id": "[concat('/subscriptions/.../resourceGroups/.../providers/Microsoft.Network/virtualNetworks/', parameters('peeringNetworkName'))]"
                             },
                             "allowVirtualNetworkAccess": true,
                             "allowForwardedTraffic": true,
