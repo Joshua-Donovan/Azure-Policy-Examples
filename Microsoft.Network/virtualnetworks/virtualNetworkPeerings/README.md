@@ -359,7 +359,7 @@ The first check in this Logical Operator[^2] array is:
 ```
 This statement is setting our scope for what Policy is checking, using the `"field": "type"` statement is a great way to keep Azure Policy from wasting time checking resources that are not in our intended scope. This statement is simple and returns true or false if the Azure Resouce type equals the specified string.
 
-Moving on to our `count` statements we can breathe a bit knowing that the `"Microsoft.Network/virtualNetworks/virtualNetworkPeerings"` child resource can only contain **one** virtualNetworkPeering and therefore we do not need to have nested loops. We still need to check for both the source id and the remote id, so we will use another `"anyOf": []` statement here.
+Moving on to our `count` statements we can breathe a bit knowing that the `"Microsoft.Network/virtualNetworks/virtualNetworkPeerings"` child resource can only contain **one** virtualNetworkPeering and therefore we do not need to have nested loops. We still need to check for both the source id and the remote id, so we will use another `"anyOf": []` condition here.
 
 ```json
 "anyOf": [
@@ -396,7 +396,7 @@ Both of these `count` statements follow the exact patterns already explained abo
 
 ### **"then": {}**
 
-Luckily the `then: {}` statement for this policy is simple, being designed as a **deny** policy it does not need to include resource changes for remediation and can simply take your choice of effect. ('deny', 'audit', 'disabled').
+Luckily the `then: {}` statement for this policy is simple, being designed as a **deny** policy it does not need to include resource changes for remediation[^11] and can simply take your choice of effect. ('deny', 'audit', 'disabled').
 
 ---
 ---
@@ -415,4 +415,5 @@ And that is it! If you have any questions or if something is unclear feel free t
 [^7]: [Template Function "contains()"](https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/template-functions-string#contains)  
 [^8]: [Azure Policy Condition "Contains"](https://learn.microsoft.com/en-us/azure/governance/policy/concepts/definition-structure#conditions)  
 [^9]: [Template Function "toLower()"](https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/template-functions-string#tolower)  
-[^10]: [Policy Function "current()"](https://learn.microsoft.com/en-us/azure/governance/policy/concepts/definition-structure#the-current-function)
+[^10]: [Policy Function "current()"](https://learn.microsoft.com/en-us/azure/governance/policy/concepts/definition-structure#the-current-function)  
+[^11]: [Remediation Documentation](https://learn.microsoft.com/en-us/azure/governance/policy/how-to/remediate-resources?tabs=azure-portal)  
