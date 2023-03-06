@@ -1,0 +1,61 @@
+{
+    "mode": "All",
+    "policyRule": {
+        "if": {
+            "anyOf": [
+                {
+                    "allOf": [
+                        {
+                            "field": "type",
+                            "equals": "Microsoft.Network/virtualNetworks"
+                        },
+                        {
+                            "field": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+                            "exists": true
+                        },
+                        {
+                            "count": {
+                                "field": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings[*]",
+                                "where": {
+                                    "value": "[or(and(contains(split(current('Microsoft.Network/virtualNetworks/virtualNetworkPeerings[*].id'),'/')[8],'C-US'), contains(split(current('Microsoft.Network/virtualNetworks/virtualNetworkPeerings[*].remoteVirtualNetwork.id'),'/')[8], 'C-US')),and(contains(split(current('Microsoft.Network/virtualNetworks/virtualNetworkPeerings[*].id'),'/')[8],'SC-US'), contains(split(current('Microsoft.Network/virtualNetworks/virtualNetworkPeerings[*].remoteVirtualNetwork.id'),'/')[8], 'SC-US')))]",
+                                    "equals": false
+                                }
+                            },
+                            "greater": 0
+                        }
+                    ]
+                },
+                {
+                    "allOf": [
+                        {
+                            "field": "type",
+                            "equals": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings"
+                        },
+                        {
+                            "value": "[or(and(contains(last(take(split(field('id'),'/'), 9)),'C-US'),contains(last(take(split(field('Microsoft.Network/virtualNetworks/virtualNetworkPeerings/remoteVirtualNetwork.id'),'/'), 9)), 'C-US')),and(contains(last(take(split(field('id'),'/'), 9)),'SC-US'),contains(last(take(split(field('Microsoft.Network/virtualNetworks/virtualNetworkPeerings/remoteVirtualNetwork.id'),'/'), 9)), 'SC-US')))]",
+                            "equals": false
+                        }
+                    ]
+                }
+            ]
+        },
+        "then": {
+            "effect": "[parameters('effect')]"
+        }
+    },
+    "parameters": {
+        "effect": {
+            "type": "String",
+            "metadata": {
+                "displayName": "Effect",
+                "description": "Enable or disable the execution of the policy"
+            },
+            "allowedValues": [
+                "deny",
+                "audit",
+                "disabled"
+            ],
+            "defaultValue": "deny"
+        }
+    }
+}

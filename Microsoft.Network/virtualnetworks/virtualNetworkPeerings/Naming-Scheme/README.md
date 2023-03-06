@@ -1,4 +1,4 @@
-# deny-virtualNetworkPeerings-on-id [discussion]
+# deny-virtualNetworkPeerings-on-id (naming scheme enforcement) [discussion]
 
 ## Azure Policy Definition Requirements `[intent]`:
 *Contoso requires restrictions on virtualNetwork Peering using string filtering on id. The policy must deny both new-deployments included in a `Microsoft.Network/virtualNetworks` deployment or during the creation or update of a `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` resource if the restricted strings match the id. This Azure Policy Definition must be able to filter on multiple input strings sent as an assignment parameter.*
