@@ -5,7 +5,7 @@
             "allOf": [
                 {
                     "field": "type",
-                    "in": "[parameters('listOfResourceTypes')]"
+                    "equals": "Microsoft.Resources/resourceGroups"
                 },
                 {
                     "anyOf": [
@@ -46,14 +46,6 @@
                 "Disabled"
             ],
             "defaultValue": "Deny"
-        },
-        "listOfResourceTypes": {
-            "type": "Array",
-            "metadata": {
-                "displayName": "listOfResourceTypes",
-                "description": "List of resource types that will be evaluated",
-                "strongType": "resourceTypes"
-            }
         },
         "prefixList": {
             "type": "Array",
